@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Clothing Retailer</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let cart = [];
+
+        // Function to add items to the cart
+        function addToCart(productName, price, quantity) {
+            const existingProductIndex = cart.findIndex(item => item.name === productName);
+            if (existingProductIndex > -1) {
+                cart[existingProductIndex].quantity += quantity;
+            } else {
+                cart.push({ name: productName, price, quantity });
+            }
+            updateCartDisplay();
+        }
+
+        // Function to remove an item from the cart
+        function removeFromCart(productName) {
+            cart = cart.filter(item => item.name !== productName);
+            updateCartDisplay();
+        }
+
+        // Function to update the cart display
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cart-items');
+            cartContainer.innerHTML = '';
+
+            let totalCost = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalCost += itemTotal;
+
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('cart-item');
+                itemElement.innerHTML = `
+                    <img src="new-arrival-shirt.jpg" alt="${item.name}" class="cart-item-img">
+                    <div class="product-info">
+                        <h3>${item.name}</h3>
+                        <p>Price: $${item.price}</p>
+                        <p>Quantity: <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity('${item.name}', this.value)" class="quantity-input"></p>
+                        <p>Total: $${itemTotal}</p>
+                        <button class="remove-btn" onclick="removeFromCart('${item.name}')">Remove</button>
+                    </div>
+                `;
+                cartContainer.appendChild(itemElement);
+            });
+
+            document.getElementById('total-cost').textContent = `Total Cost: $${totalCost.toFixed(2)}`;
+        }
+
+        // Function to update item quantity in the cart
+        function updateQuantity(productName, newQuantity) {
+            const productIndex = cart.findIndex(item => item.name === productName);
+            if (productIndex > -1) {
+                cart[productIndex].quantity = parseInt(newQuantity);
+                updateCartDisplay();
+            }
+        }
+
+        window.onload = function() {
+            // Automatically adding items to cart for demo
+            addToCart('Trendy T-Shirt', 20, 1);
+            addToCart('Elegant Summer Dress', 35, 2);
+            addToCart('Leather Jacket', 120, 1);
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Clothing Retailer - Shopping Cart</h1>
+    </header>
+
+    <div class="container">
+        <section id="cart" class="category">
+            <h2>Your Shopping Cart</h2>
+            <div id="cart-items">
+                <!-- Cart items will be dynamically added here -->
+            </div>
+
+            <div class="cart-summary">
+                <h3>Cart Summary</h3>
+                <p id="total-cost">Total Cost: $0</p>
+                <button onclick="window.location.href='checkout.html'" class="checkout-btn">Proceed to Checkout</button>
+            </div>
+
+            <!-- Back to Home button -->
+            <div class="back-to-home">
+                <a href="index.html" class="back-home-btn">Back to Home</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Clothing Retailer. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
